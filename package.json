@@ -1,4 +1,5 @@
 {
+	"type": "module",
 	"homepage": "https://ChrismanZack-FS.github.io/memory-lane",
 	"name": "memory-lane",
 	"version": "0.1.0",

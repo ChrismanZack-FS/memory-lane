@@ -1,6 +1,6 @@
 ---
-title: "Post One"
-description: "Placeholder for first post."
+title: "High School"
+description: "The first time I tried coding."
 ---
 
-this is where a the content for post one will go.
+The First time I ever tried coding was in high school.
