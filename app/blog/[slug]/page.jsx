@@ -1,20 +1,34 @@
-import { getPostBySlug } from "@/lib/posts";
-import { notFound } from "next/navigation";
-import { remark } from "remark";
-import html from "remark-html";
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import React from "react";
+import Markdown from "react-markdown";
+
+const POSTS_DIR = path.join(process.cwd(), "posts");
+
+export async function generateStaticParams() {
+	const files = fs.readdirSync(POSTS_DIR);
+
+	return files.map((file) => ({
+		slug: file.replace(".md", ""),
+	}));
+}
+
+async function getPostData(slug) {
+	const filePath = path.join(POSTS_DIR, `${slug}.md`);
+	const fileContent = fs.readFileSync(filePath, "utf8");
+	const { content } = matter(fileContent);
+	return { content };
+}
 
 export default async function BlogPost({ params }) {
-	const post = getPostBySlug(params.slug);
-	if (!post) return notFound();
-
-	const processedContent = await remark().use(html).process(post.content);
-	const contentHtml = processedContent.toString();
+	const { slug } = params;
+	const post = await getPostData(slug);
 
 	return (
-		<main className="max-w-2xl mx-auto p-6">
-			<h1 className="text-2xl font-bold">{post.title}</h1>
-			<p className="text-gray-500">{post.date}</p>
-			<div dangerouslySetInnerHTML={{ __html: contentHtml }} className="mt-4" />
-		</main>
+		<article className="prose bg-gray-900 text-green-400 p-6 rounded-lg shadow-md">
+			<h1 className="text-2xl font-bold">{slug}</h1>
+			<Markdown>{post.content}</Markdown>
+		</article>
 	);
 }
